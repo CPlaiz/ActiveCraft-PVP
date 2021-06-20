@@ -1,0 +1,69 @@
+name: ActiveCraft
+version: ${project.version}
+main: de.cplaiz.activecraft.Main
+api-version: 1.16
+authors: [ CPlaiz ]
+description: ActiveCraft PvP and Utilities Plugin | 2021 CPlaiz
+
+commands:
+  spawn:
+    description: Teleport to spawn.
+    aliases: ["setspawn"]
+  canceltimer:
+    description: Cancels the timer.
+  setteam:
+    description: Sets a player's team.
+  setepisodes:
+    description: Sets the amount of a player's played episodes.
+  setkills:
+    description: Sets the amount of a player's kills.
+  setalive:
+    description: Sets the amount of a player's kills.
+  duty:
+    description: Toggles the duty mode.
+  activecraft-reload:
+    description: Reloads the main config.
+  stats:
+    description: Shows a player's Varo statistics.
+  varo-start:
+    description: Starts the event.
+
+
+
+permissions:
+  de.cplaiz.activecraft.heal:
+    descriptions: Permissions to heal yourself.
+    default: op
+  de.cplaiz.activecraft.timer.cancel:
+    descriptions: Permissions to cancel the VARO timer.
+    default: op
+  de.cplaiz.activecraft.setspawn:
+    descriptions: Permissions to set spawn
+    default: op
+  de.cplaiz.activecraft.fly.own:
+    descriptions: Permissions to fly
+    default: op
+  de.cplaiz.activecraft.team.name.set:
+    descriptions: Permissions to set a team name for a player
+    default: op
+  de.cplaiz.activecraft.team.roleid.set:
+    descriptions: Permissions to set a Discord role id for a player
+    default: op
+  de.cplaiz.activecraft.episodes.set:
+    descriptions: Permissions to set the amount of played episodes for a player
+    default: op
+  de.cplaiz.activecraft.kills.set:
+    descriptions: Permissions to set the amount of kills for a player
+    default: op
+  de.cplaiz.activecraft.duty:
+    descriptions: Permission to toggle the Duty mode
+    default: op
+  de.cplaiz.activecraft.stats.view:
+    descriptions: Permission to view player statistics
+    default: op
+  de.cplaiz.activecraft.alive.set:
+    descriptions: Permission to set alive status
+    default: op
+  de.cplaiz.activecraft.event.start:
+    descriptions: Permission to start the event
+    default: op

@@ -1,0 +1,13 @@
+TimerTime: 900 #in seconds
+CommandExecutedOnTimerEnd: "spawn"
+CommandExecutedOnEventStart: "say start"
+StartMessage: "§6The event has started! Good luck."
+TimeBeforeEventStart: 15 #in seconds
+MessageOnTimerStart: ""
+WorldName: "test"
+WebhookURL: "" #Go to channel settings -> Integrations -> Webhooks -> New Webhook and paste url in the two ""
+MessageChannel: "846779760713793558"
+CommandExecutedOnJoinQuit: ""
+CommandExecutedOnPlayerDeath: ""
+DutyOnCommand: ""
+DutyOffCommand: ""
