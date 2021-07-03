@@ -38,8 +38,8 @@ public final class Main extends JavaPlugin {
 
     public static String PREFIX = ChatColor.GREEN + "ActiveCraft §f";
     public static String NOPERMISSION = ChatColor.RED + "You don't have the permission to do that!";
-    public static String INVALIDARGS = ChatColor.GOLD + "Invalid arguments! Please recheck the command!";
-    public static String INVALIDPLAYER = ChatColor.GOLD + "This is an invalid player!";
+    public static String INVALIDARGS = ChatColor.RED + "Invalid arguments!" + ChatColor.GRAY + " Please recheck the command!";
+    public static String INVALIDPLAYER = ChatColor.RED + "Invalid player!" + ChatColor.GRAY + " Please recheck the command!";
 
 
     public static Main INSTANCE;

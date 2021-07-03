@@ -17,7 +17,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 
@@ -27,6 +30,9 @@ public class JoinQuitListener implements Listener {
     String commandExecutedOnJoinQuit = Main.getPlugin().getConfig().getString("CommandExecutedOnJoinQuit");
     boolean logWorldChanges = Main.getPlugin().getConfig().getBoolean("LogWorldChanges");
     List<String> commandExecutedOnPlayerDeath = Main.getPlugin().getConfig().getStringList("CommandExecutedOnPlayerDeath");
+
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ss");
+    LocalDateTime now = LocalDateTime.now();
 
 
     Long tcid = Long.parseLong(tcidraw);
@@ -43,8 +49,6 @@ public class JoinQuitListener implements Listener {
 
     @EventHandler
     public void onPlayerWorldChange(PlayerTeleportEvent event) {
-
-        System.out.println(name);
 
         Location to = event.getTo();
         Location from = event.getFrom();
@@ -83,6 +87,9 @@ public class JoinQuitListener implements Listener {
 
                         tc.sendMessageEmbeds(joinBuilder.build()).queue();
 
+                        fileConfig.set("last-online", "Online");
+                        fileConfig.saveConfig();
+
                     }
                     if (to.getWorld().getName().equals(worldName + "_nether") && !from.getWorld().getName().equals(worldName)) {
                         tc.sendMessageEmbeds(joinBuilder.build()).queue();
@@ -94,6 +101,9 @@ public class JoinQuitListener implements Listener {
                         leaveBuilder.setColor(0xaa5555);
                         leaveBuilder.setTimestamp(OffsetDateTime.now());
                         tc.sendMessageEmbeds(leaveBuilder.build()).queue();
+
+                        fileConfig.set("last-online", dtf.format(now));
+                        fileConfig.saveConfig();
                     }
                     if (from.getWorld().getName().equals(worldName + "_nether") && !to.getWorld().getName().equals(worldName)) {
                         EmbedBuilder leaveBuilder = new EmbedBuilder();
@@ -102,6 +112,9 @@ public class JoinQuitListener implements Listener {
                         leaveBuilder.setColor(0xaa5555);
                         leaveBuilder.setTimestamp(OffsetDateTime.now());
                         tc.sendMessageEmbeds(leaveBuilder.build()).queue();
+
+                        fileConfig.set("last-online", dtf.format(now));
+                        fileConfig.saveConfig();
                     }
                 }
             }
@@ -153,8 +166,12 @@ public class JoinQuitListener implements Listener {
             fileConfig.set("episodes", 0);
             fileConfig.set("taskid", 0);
             fileConfig.set("is-alive", true);
-            fileConfig.set("stats.kills", 0);
-            fileConfig.set("onDuty", false);
+            fileConfig.set("on-duty", false);
+            fileConfig.set("stats.blocks.broken", 0);
+            fileConfig.set("stats.blocks.placed", 0);
+            fileConfig.set("stats.killed.players", 0);
+            fileConfig.set("stats.killed.monsters", 0);
+            fileConfig.set("stats.killed.animals", 0);
 
 
             fileConfig.saveConfig();
@@ -191,10 +208,13 @@ public class JoinQuitListener implements Listener {
                 World from = p.getWorld();
                 if (from.getName().equals(worldName)) {
                     tc.sendMessageEmbeds(leaveBuilder.build()).queue();
+                    fileConfig.set("last-online", dtf.format(now));
+                    fileConfig.saveConfig();
                 }
                 if (from.getName().equals(worldName + "_nether")) {
-
                     tc.sendMessageEmbeds(leaveBuilder.build()).queue();
+                    fileConfig.set("last-online", dtf.format(now));
+                    fileConfig.saveConfig();
                 }
             }
         }

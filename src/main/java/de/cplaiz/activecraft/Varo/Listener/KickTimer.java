@@ -86,7 +86,7 @@ public class KickTimer implements Listener, CommandExecutor {
 
                                     p = playerStoring.get(player.getUniqueId());
 
-                                    switch (time) {
+                                    switch (zeit) {
                                         case 600:
                                             p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l10 Minuten§r §bgekickt!");
                                             p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
@@ -145,7 +145,7 @@ public class KickTimer implements Listener, CommandExecutor {
 
 
                                     zeit--;
-                                    //System.out.println(zeit);
+                                    System.out.println(zeit);
                                     timerActive.put(player.getUniqueId(), zeit);
 
 

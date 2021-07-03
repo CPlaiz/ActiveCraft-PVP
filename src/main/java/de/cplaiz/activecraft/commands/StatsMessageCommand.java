@@ -26,8 +26,9 @@ public class StatsMessageCommand implements CommandExecutor, TabCompleter {
         if (sender.hasPermission("stats.view") || sender.isOp()) {
             if (args.length == 1) {
 
-
                 Player ment = Main.getPlugin().getServer().getPlayer(args[0]);
+
+
 
                 String uuid = nameuuidlist.getString(args[0].toLowerCase());
 
@@ -36,27 +37,40 @@ public class StatsMessageCommand implements CommandExecutor, TabCompleter {
                 if (file.exists()) {
 
                     FileConfig fileConfig = new FileConfig("playerdata/" + uuid + ".yml");
-                    int killscount = fileConfig.getInt("stats.kills");
+
+                    int playerkillcount = fileConfig.getInt("stats.killed.players");
+                    int mobkillcount = fileConfig.getInt("stats.killed.monsters");
+                    int animalkillcount = fileConfig.getInt("stats.killed.animals");
+                    int brokenblockcount = fileConfig.getInt("stats.blocks.broken");
+                    int placedblockcount = fileConfig.getInt("stats.blocks.broken");
                     int episodescount = fileConfig.getInt("episodes");
-                    boolean alive = fileConfig.getBoolean("isalive");
+                    boolean alive = fileConfig.getBoolean("is-alive");
                     String teamnamestring = fileConfig.getString("team.name");
                     String namestring = fileConfig.getString("name");
                     String uuidstring = fileConfig.getString("uuid");
+                    String lastonlinestring = fileConfig.getString("last-online");
 
                     String splitter = "§6---------------\n";
                     String header = "§l§6" + namestring + "'s Stats: \n";
                     String name = "§bName§f: " + namestring + "\n";
                     String teamname = "§bTeam§f: " + teamnamestring + "\n";
                     String isalive;
-                    String kills = "§bKills§f: " + killscount + "\n";
+                    String kills = "-- §3Killed§f --\n";
+                    String playerkills = "§bPlayers§f: " + playerkillcount + "\n";
+                    String mobkills = "§bMonsters§f: " + mobkillcount + "\n";
+                    String animalkills = "§bAnimals§f: " + animalkillcount + "\n";
+                    String blocks = "-- §3Blocks§f--\n";
+                    String blocksbroken = "§bBroken§f: " + brokenblockcount + "\n";
+                    String blocksplaced = "§bPlaced§f: " + placedblockcount + "\n";
                     String episodes = "§bEpisodes§f: " + episodescount + "\n";
+                    String lastonline = "§bLast online§f: " + lastonlinestring + "\n";
                     if (alive) {
                         isalive = "§bAlive§f: " + ChatColor.GREEN + alive + "\n";
-                        sender.sendMessage(splitter + header + name + teamname + isalive + kills + episodes + splitter);
+                        sender.sendMessage(splitter + header + name + teamname + isalive + episodes + kills + playerkills +mobkills + animalkills + blocks +blocksbroken + blocksplaced + lastonline + splitter);
                     }
                     if (!alive) {
                         isalive = "§bAlive§f: " + ChatColor.RED + alive + "\n";
-                        sender.sendMessage(splitter + header + name + teamname + isalive + kills + episodes + splitter);
+                        sender.sendMessage(splitter + header + name + teamname + isalive + episodes + kills + playerkills +mobkills + animalkills + blocks +blocksbroken + blocksplaced + lastonline + splitter);
                     }
                 }else sender.sendMessage(Main.INVALIDPLAYER);
 
@@ -68,30 +82,41 @@ public class StatsMessageCommand implements CommandExecutor, TabCompleter {
 
 
                     FileConfig fileConfig = new FileConfig("playerdata/" + player.getUniqueId().toString() + ".yml");
-                    int killscount = fileConfig.getInt("stats.kills");
-                    int episodescount = fileConfig.getInt("episodes");
-                    boolean alive = fileConfig.getBoolean("isalive");
-                    String teamnamestring = fileConfig.getString("team.name");
-                    String namestring = fileConfig.getString("name");
-                    String uuidstring = fileConfig.getString("uuid");
+                int playerkillcount = fileConfig.getInt("stats.killed.players");
+                int mobkillcount = fileConfig.getInt("stats.killed.monsters");
+                int animalkillcount = fileConfig.getInt("stats.killed.animals");
+                int brokenblockcount = fileConfig.getInt("stats.blocks.broken");
+                int placedblockcount = fileConfig.getInt("stats.blocks.broken");
+                int episodescount = fileConfig.getInt("episodes");
+                boolean alive = fileConfig.getBoolean("is-alive");
+                String teamnamestring = fileConfig.getString("team.name");
+                String namestring = fileConfig.getString("name");
+                String uuidstring = fileConfig.getString("uuid");
+                String lastonlinestring = fileConfig.getString("last-online");
 
-                    String splitter = "§6---------------\n";
-                    String header = "§l§6Your Stats: \n";
-                    String name = "§bName§f: " + namestring + "\n";
-                    String teamname = "§bTeam§f: " + teamnamestring + "\n";
-                    String isalive;
-                    String kills = "§bKills§f: " + killscount + "\n";
-                    String episodes = "§bEpisodes§f: " + episodescount + "\n";
-                    if (alive) {
-                        isalive = "§bAlive§f: " + ChatColor.GREEN + alive + "\n";
-                        sender.sendMessage(splitter + header + name + teamname + isalive + kills + episodes + splitter);
-                    }
-                    if (!alive) {
-                        isalive = "§bAlive§f: " + ChatColor.RED + alive + "\n";
-                        sender.sendMessage(splitter + header + name + teamname + isalive + kills + episodes + splitter);
-
-                } else sender.sendMessage(Main.INVALIDPLAYER);
-            }
+                String splitter = "§6---------------\n";
+                String header = "§l§6" + namestring + "'s Stats: \n";
+                String name = "§bName§f: " + namestring + "\n";
+                String teamname = "§bTeam§f: " + teamnamestring + "\n";
+                String isalive;
+                String kills = "-- §3Killed§f --\n";
+                String playerkills = "§bPlayers§f: " + playerkillcount + "\n";
+                String mobkills = "§bMonsters§f: " + mobkillcount + "\n";
+                String animalkills = "§bAnimals§f: " + animalkillcount + "\n";
+                String blocks = "-- §3Blocks§f--\n";
+                String blocksbroken = "§bBroken§f: " + brokenblockcount + "\n";
+                String blocksplaced = "§bPlaced§f: " + placedblockcount + "\n";
+                String episodes = "§bEpisodes§f: " + episodescount + "\n";
+                String lastonline = "§bLast online§f: " + lastonlinestring + "\n";
+                if (alive) {
+                    isalive = "§bAlive§f: " + ChatColor.GREEN + alive + "\n";
+                    sender.sendMessage(splitter + header + name + teamname + isalive + episodes + kills + playerkills +mobkills + animalkills + blocks +blocksbroken + blocksplaced + lastonline + splitter);
+                }
+                if (!alive) {
+                    isalive = "§bAlive§f: " + ChatColor.RED + alive + "\n";
+                    sender.sendMessage(splitter + header + name + teamname + isalive + episodes + kills + playerkills +mobkills + animalkills + blocks +blocksbroken + blocksplaced + lastonline + splitter);
+                }
+            } else sender.sendMessage(Main.INVALIDPLAYER);
 
         } else sender.sendMessage(Main.NOPERMISSION);
 

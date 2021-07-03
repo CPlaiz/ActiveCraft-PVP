@@ -3,6 +3,7 @@ package de.cplaiz.activecraft.Varo.Command;
 import de.cplaiz.activecraft.Main;
 import de.cplaiz.activecraft.utils.FileConfig;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -57,12 +58,12 @@ public class SetAlive implements CommandExecutor, TabCompleter {
                         case "true":
                             fileConfig.set("is-alive", true);
                             fileConfig.saveConfig();
-                            sender.sendMessage("§6Status for " + p.getName() + ("§6 is now §a§lALIVE"));
+                            sender.sendMessage(ChatColor.GOLD + "Status for " + ChatColor.AQUA + p.getName() + ChatColor.GOLD + (" is now §a§lALIVE"));
                             break;
                         case "false":
                             fileConfig.set("is-alive", false);
                             fileConfig.saveConfig();
-                            sender.sendMessage("§6Status for " + p.getName() + ("§6 is now §c§lDEAD"));
+                            sender.sendMessage(ChatColor.GOLD + "Status for " + ChatColor.AQUA + p.getName() + ChatColor.GOLD + (" is now §c§lDEAD"));
                             break;
 
                     }

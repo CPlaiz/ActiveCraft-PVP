@@ -30,15 +30,15 @@ public class SetKills implements CommandExecutor, TabCompleter {
                     //System.out.println(uuid);
                     FileConfig fileConfig = new FileConfig("playerdata/" + uuid + ".yml");
                     int kills = Integer.parseInt(args[1]);
-                    fileConfig.set("stats.kills", kills);
+                    fileConfig.set("stats.killed.players", kills);
                     fileConfig.saveConfig();
 
-                    sender.sendMessage(ChatColor.GOLD + "Kills for " +ChatColor.WHITE + args[0] + ChatColor.GOLD + " is now " + ChatColor.RED + kills);
+                    sender.sendMessage(ChatColor.GOLD + "Kills for " + ChatColor.AQUA + args[0] + ChatColor.GOLD + " is now " + ChatColor.GREEN + kills);
 
-                    } else sender.sendMessage(ChatColor.GOLD + "This is not a valid player!");
-                } else sender.sendMessage(ChatColor.GOLD + "This is not a valid player!");
-            } else sender.sendMessage(ChatColor.GOLD + "This is not a valid player!");
-        } else sender.sendMessage(ChatColor.RED + "You are not allowed to do that!");
+                    } else sender.sendMessage(Main.INVALIDPLAYER);
+                } else sender.sendMessage(Main.INVALIDPLAYER);
+            } else sender.sendMessage(Main.INVALIDARGS);
+        } else sender.sendMessage(Main.NOPERMISSION);
 
         return true;
     }

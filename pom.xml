@@ -6,7 +6,7 @@
 
     <groupId>de.cplaiz</groupId>
     <artifactId>activecraft</artifactId>
-    <version>1.4.0-pre2</version>
+    <version>1.4.0</version>
     <packaging>jar</packaging>
 
     <name>ActiveCraft</name>

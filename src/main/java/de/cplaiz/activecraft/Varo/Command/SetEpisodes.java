@@ -33,12 +33,12 @@ public class SetEpisodes implements CommandExecutor, TabCompleter {
                     fileConfig.set("episodes", episodes);
                     fileConfig.saveConfig();
 
-                    sender.sendMessage(ChatColor.GOLD + "Episodes for " + args[0] + " is now " + episodes);
+                    sender.sendMessage(ChatColor.GOLD + "Episodes for " + ChatColor.AQUA + args[0] + ChatColor.GOLD + " is now " + ChatColor.GREEN + episodes);
 
-                    } else sender.sendMessage(ChatColor.GOLD + "This is not a valid player!");
-                } else sender.sendMessage(ChatColor.GOLD + "This is not a valid player!");
-            } else sender.sendMessage(ChatColor.GOLD + "This is not a valid player!");
-        } else sender.sendMessage(ChatColor.RED + "You are not allowed to do that!");
+                    } else sender.sendMessage(Main.INVALIDPLAYER);
+                } else sender.sendMessage(Main.INVALIDPLAYER);
+            } else sender.sendMessage(Main.INVALIDARGS);
+        } else sender.sendMessage(Main.NOPERMISSION);
 
         return true;
     }

@@ -33,7 +33,7 @@ public class SetTeamName implements CommandExecutor , TabCompleter {
                     fileConfig.set("team.name", teamName);
                     fileConfig.saveConfig();
 
-                    sender.sendMessage(ChatColor.GOLD + "Team for " + args[0] + " is now " + teamName);
+                    sender.sendMessage(ChatColor.GOLD + "Team for " + ChatColor.AQUA + args[0] + ChatColor.GOLD + " is now " + ChatColor.GREEN + teamName);
 
                     } else sender.sendMessage(ChatColor.GOLD + "This is not a valid player!");
                 } else sender.sendMessage(ChatColor.GOLD + "This is not a valid player!");
