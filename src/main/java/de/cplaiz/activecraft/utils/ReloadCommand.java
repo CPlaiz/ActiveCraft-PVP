@@ -1,6 +1,7 @@
 package de.cplaiz.activecraft.utils;
 
 import de.cplaiz.activecraft.Main;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -9,19 +10,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
-public class ConfigReloadCommand implements CommandExecutor {
-
-    YamlConfiguration conf = new YamlConfiguration();
-    File cfile = new File(Main.getPlugin().getDataFolder(), "config.yml");
-    Config config = Main.getPlugin().getMainConfig();
+public class ReloadCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
-        config.reload();
-        config.save();
-
-        sender.sendMessage("§6Config reloaded");
+        //Bukkit.getPluginManager().disablePlugin(Main.getPlugin());
 
         return true;
     }

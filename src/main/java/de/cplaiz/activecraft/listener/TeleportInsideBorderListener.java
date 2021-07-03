@@ -1,5 +1,6 @@
 package de.cplaiz.activecraft.listener;
 
+import de.cplaiz.activecraft.Main;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.WorldBorder;
@@ -8,59 +9,81 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.HashMap;
 
 public class TeleportInsideBorderListener implements Listener {
 
-    private HashMap<String, Double> values = new HashMap<String, Double>();
+    String worldName = Main.getPlugin().getConfig().getString("WorldName");
 
+    double locx;
+    double locz;
 
-@EventHandler
-    public void onJoin(PlayerJoinEvent event) {
+    @EventHandler
+    public void onWorldChange(PlayerTeleportEvent event) {
 
     Player p = event.getPlayer();
-    Location loc = p.getLocation();
-    WorldBorder border = loc.getWorld().getWorldBorder();
-    double radius = border.getSize() / 2;
-    double radius2 = radius - radius*2;
-    Location location = p.getLocation(), center = border.getCenter();
-    int px = p.getLocation().getBlockX();
-    int py = p.getLocation().getBlockY();
-    int pz = p.getLocation().getBlockZ();
+    Location from = event.getFrom();
+    Location to = event.getTo();
 
-    if(px > radius) {
-        values.put("x", radius);
-    }
-    if(pz > radius) {
-        values.put("z", radius);
-    }
-    if(px < radius2) {
-        values.put("x", radius2);
-    }
-    if(pz < radius2) {
-        values.put("z", radius2);
-    }
+    if (!to.getWorld().getName().equals(from.getWorld().getName())) {
+        if (to.getWorld().getName().equals(worldName) || to.getWorld().getName().equals(worldName + "_nether")) {
 
-    double tempcordx = values.get("x");
-    double tempcordz = values.get("z");
+            System.out.println(from.getWorld().getName());
 
-    int cordx = (int) Math.round(tempcordx);
-    int cordz = (int) Math.round(tempcordz);
+            if (isOutsideOfBorder(p)) {
+                System.out.println("outside");
 
-    int cordy = loc.getWorld().getHighestBlockAt(cordx, cordz).getY();
 
-    System.out.println(cordx+ " " + cordy + " " + cordz);
+                WorldBorder border = p.getWorld().getWorldBorder();
+                Location loc = p.getLocation();
+                Location center = border.getCenter();
+                double size = border.getSize() / 2;
 
-    Location tploc = new Location(p.getWorld(), cordx, cordy, cordz);
+                if (loc.getBlockX() > size - center.getBlockX()) {
+                    locx = size - 1 - center.getBlockX();
+                    System.out.println("x außerhalb");
+                } else if (loc.getBlockX() < -size - center.getBlockX()) {
+                    locx = -size + 1 - center.getBlockX();
+                    System.out.println("-x außerhalb");
+                } else locx = loc.getX() - center.getBlockX();
 
-    Block cordBlock = loc.getWorld().getBlockAt(cordx, cordy, cordz);
 
-    if(cordBlock.getType() != Material.LAVA ||
-            cordBlock.getType() != Material.WATER ||
-            cordBlock.getType() != Material.AIR) {
-        p.teleport(tploc);
-        System.out.println("Safe Teleport");
-    }
+                if (loc.getBlockZ() > size - center.getBlockZ()) {
+                    locz = size - 1 - center.getBlockZ();
+                    System.out.println("z außerhalb");
+                } else if (loc.getBlockZ() < -size - center.getBlockZ()) {
+                    locz = -size + 1 - center.getBlockZ();
+                    System.out.println("-z außerhalb");
+                } else locz = loc.getZ() - center.getBlockZ();
+
+
+                int intx = (int) Math.round(locx);
+                int intz = (int) Math.round(locz);
+
+                System.out.println("intx: " + intx + ", intz: " + intz);
+
+
+                int y = loc.getWorld().getHighestBlockYAt((int) Math.round(locx), (int) Math.round(locz));
+
+                Location tploc = new Location(p.getWorld(), locx, y + 1, locz, loc.getYaw(), loc.getPitch());
+
+                p.teleport(tploc);
+            } else System.out.println("inside");
+
+            System.out.println("einfach test obs überhaupt klappt");
+        }else System.out.println("welt ist nicht die config welt");
+    } else System.out.println("to und from sind gleich");
 }
+
+    public boolean isOutsideOfBorder(Player p) {
+        Location loc = p.getLocation();
+        WorldBorder border = p.getWorld().getWorldBorder();
+        double x = loc.getX();
+        double z = loc.getZ();
+        double size = border.getSize();
+        return ((x > size || (-x) > size) || (z > size || (-z) > size));
+    }
+
 }

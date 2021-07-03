@@ -10,26 +10,32 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SetKills implements CommandExecutor, TabCompleter {
 
+    FileConfig nameuuidlist = new FileConfig("nameuuidlist.yml");
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (sender.hasPermission("kills.set") || sender.isOp()) {
             if (args.length == 2) {
-                Player ment = Main.getPlugin().getServer().getPlayer(args[0]);
-                if (ment != null) {
-                    int kills = Integer.parseInt(args[1]);
-                    FileConfig fileConfig = new FileConfig("playerdata/" + ment.getUniqueId().toString() + ".yml");
+                String uuid = nameuuidlist.getString(args[0].toLowerCase());
+                File file = new File(Main.getPlugin().getDataFolder() + File.separator + "playerdata" + File.separator + uuid + ".yml");
 
+                if (file.exists()) {
+                if (uuid != null) {
+                    //System.out.println(uuid);
+                    FileConfig fileConfig = new FileConfig("playerdata/" + uuid + ".yml");
+                    int kills = Integer.parseInt(args[1]);
                     fileConfig.set("stats.kills", kills);
                     fileConfig.saveConfig();
 
-                    sender.sendMessage(ChatColor.GOLD + "Kills for " + ment.getName() + " is now " + kills);
+                    sender.sendMessage(ChatColor.GOLD + "Kills for " +ChatColor.WHITE + args[0] + ChatColor.GOLD + " is now " + ChatColor.RED + kills);
 
+                    } else sender.sendMessage(ChatColor.GOLD + "This is not a valid player!");
                 } else sender.sendMessage(ChatColor.GOLD + "This is not a valid player!");
             } else sender.sendMessage(ChatColor.GOLD + "This is not a valid player!");
         } else sender.sendMessage(ChatColor.RED + "You are not allowed to do that!");
@@ -43,7 +49,7 @@ public class SetKills implements CommandExecutor, TabCompleter {
         if (args.length == 0) return list;
         if (args.length == 1) {
             for (Player p : Main.getPlugin().getServer().getOnlinePlayers()) {
-                list.add(p.getName().toLowerCase());
+                list.add(p.getName());
             }
         } else if (args.length == 2) {
             for(int i = 0; i < 100; i++) {
@@ -51,9 +57,9 @@ public class SetKills implements CommandExecutor, TabCompleter {
             }
         }
         ArrayList<String> completerList = new ArrayList<>();
-        String currentarg = args[args.length-1].toLowerCase();
+        String currentarg = args[args.length-1];
         for (String s : list) {
-            String s1 = s.toLowerCase();
+            String s1 = s;
             if (s1.startsWith(currentarg)){
                 completerList.add(s);
             }

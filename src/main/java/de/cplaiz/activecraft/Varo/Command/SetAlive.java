@@ -8,15 +8,16 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Objects;
+import java.util.UUID;
 
 
 public class SetAlive implements CommandExecutor, TabCompleter {
 
-    String dutyOnCommand = Main.getPlugin().getConfig().getString("DutyOnCommand");
-    String dutyOffCommand = Main.getPlugin().getConfig().getString("DutyOffCommand");
+    FileConfig nameuuidlist = new FileConfig("nameuuidlist.yml");
 
     ConsoleCommandSender console = Bukkit.getConsoleSender();
 
@@ -25,19 +26,28 @@ public class SetAlive implements CommandExecutor, TabCompleter {
         if (sender.hasPermission("alive.set") || sender.isOp()) {
             if (args.length == 2) {
                 Player ment = Main.getPlugin().getServer().getPlayer(args[0]);
-                FileConfig fileConfig = new FileConfig("playerdata/" + ment.getUniqueId().toString() + ".yml");
-                switch (args[1].toLowerCase()) {
-                    case "true":
-                        fileConfig.set("isalive", true);
-                        fileConfig.saveConfig();
-                        sender.sendMessage("§6Status for " + ment.getName() + ("§6 is now §a§lALIVE"));
-                        break;
-                    case "false":
-                        fileConfig.set("isalive", false);
-                        fileConfig.saveConfig();
-                        sender.sendMessage("§6Status for " + ment.getName() + ("§6 is now §c§lDEAD"));
-                        break;
-                }
+                String uuid = nameuuidlist.getString(args[0].toLowerCase());
+                File file = new File(Main.getPlugin().getDataFolder() + File.separator + "playerdata" + File.separator + uuid + ".yml");
+
+                if (file.exists()) {
+                if (uuid != null) {
+                    //System.out.println(uuid);
+                    FileConfig fileConfig = new FileConfig("playerdata/" + uuid + ".yml");
+                    switch (args[1].toLowerCase()) {
+                        case "true":
+                            fileConfig.set("is-alive", true);
+                            fileConfig.saveConfig();
+                            sender.sendMessage("§6Status for " + args[0] + ("§6 is now §a§lALIVE"));
+                            break;
+                        case "false":
+                            fileConfig.set("is-alive", false);
+                            fileConfig.saveConfig();
+                            sender.sendMessage("§6Status for " + args[0] + ("§6 is now §c§lDEAD"));
+                            break;
+                    }
+                    } else sender.sendMessage(Main.INVALIDARGS);
+            } else sender.sendMessage(Main.INVALIDPLAYER);
+
             } else if (args.length == 1) {
                 if (sender instanceof Player) {
                     Player p = ((Player) sender).getPlayer();
@@ -45,12 +55,12 @@ public class SetAlive implements CommandExecutor, TabCompleter {
 
                     switch (args[0].toLowerCase()) {
                         case "true":
-                            fileConfig.set("onDuty", true);
+                            fileConfig.set("is-alive", true);
                             fileConfig.saveConfig();
                             sender.sendMessage("§6Status for " + p.getName() + ("§6 is now §a§lALIVE"));
                             break;
                         case "false":
-                            fileConfig.set("onDuty", false);
+                            fileConfig.set("is-alive", false);
                             fileConfig.saveConfig();
                             sender.sendMessage("§6Status for " + p.getName() + ("§6 is now §c§lDEAD"));
                             break;

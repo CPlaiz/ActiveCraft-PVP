@@ -28,13 +28,13 @@ public class OnDutyCommand implements CommandExecutor, TabCompleter {
                 FileConfig fileConfig = new FileConfig("playerdata/" + ment.getUniqueId().toString() + ".yml");
                 switch (args[1].toLowerCase()) {
                     case "on":
-                        fileConfig.set("onDuty", true);
+                        fileConfig.set("on-duty", true);
                         fileConfig.saveConfig();
                         sender.sendMessage("§6You are now on duty.");
                         Bukkit.dispatchCommand(console, dutyOnCommand.replace("%playername%", ment.getName()));
                         break;
                     case "off":
-                        fileConfig.set("onDuty", false);
+                        fileConfig.set("on-duty", false);
                         fileConfig.saveConfig();
                         sender.sendMessage("§6You are not on Duty anymore.");
                         Bukkit.dispatchCommand(console, dutyOffCommand.replace("%playername%", ment.getName()));
@@ -47,13 +47,13 @@ public class OnDutyCommand implements CommandExecutor, TabCompleter {
 
                     switch (args[0].toLowerCase()) {
                         case "on":
-                            fileConfig.set("onDuty", true);
+                            fileConfig.set("on-duty", true);
                             fileConfig.saveConfig();
                             sender.sendMessage("§6You are now on duty.");
                             Bukkit.dispatchCommand(console, dutyOnCommand.replace("%playername%", p.getName()));
                             break;
                         case "off":
-                            fileConfig.set("onDuty", false);
+                            fileConfig.set("on-duty", false);
                             fileConfig.saveConfig();
                             sender.sendMessage("§6You are not on Duty anymore.");
                             Bukkit.dispatchCommand(console, dutyOffCommand.replace("%playername%", p.getName()));

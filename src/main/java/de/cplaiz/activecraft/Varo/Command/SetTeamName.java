@@ -2,36 +2,42 @@ package de.cplaiz.activecraft.Varo.Command;
 
 import de.cplaiz.activecraft.Main;
 import de.cplaiz.activecraft.utils.FileConfig;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.Console;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SetTeamName implements CommandExecutor , TabCompleter {
 
+    FileConfig nameuuidlist = new FileConfig("nameuuidlist.yml");
+    FileConfig config = new FileConfig("config.yml");
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (sender.hasPermission("team.name.set") || sender.isOp()) {
             if (args.length == 2) {
-                Player ment = Main.getPlugin().getServer().getPlayer(args[0]);
-                if (ment != null) {
-                    String teamName = args[1];
-                    FileConfig fileConfig = new FileConfig("playerdata/" + ment.getUniqueId().toString() + ".yml");
+                String uuid = nameuuidlist.getString(args[0].toLowerCase());
+                File file = new File(Main.getPlugin().getDataFolder() + File.separator + "playerdata" + File.separator + uuid + ".yml");
 
+                if (file.exists()) {
+                if (uuid != null) {
+                    FileConfig fileConfig = new FileConfig("playerdata/" + uuid + ".yml");
+                    String teamName = args[1];
                     fileConfig.set("team.name", teamName);
                     fileConfig.saveConfig();
 
+                    sender.sendMessage(ChatColor.GOLD + "Team for " + args[0] + " is now " + teamName);
 
+                    } else sender.sendMessage(ChatColor.GOLD + "This is not a valid player!");
                 } else sender.sendMessage(ChatColor.GOLD + "This is not a valid player!");
-            }   else sender.sendMessage(ChatColor.GOLD + "This is not a valid player!");
+            } else sender.sendMessage(ChatColor.GOLD + "This is not a valid player!");
         } else sender.sendMessage(ChatColor.RED + "You are not allowed to do that!");
 
         return true;
@@ -44,14 +50,14 @@ public class SetTeamName implements CommandExecutor , TabCompleter {
         if (args.length == 0) return list;
         if (args.length == 1) {
             for (Player p : Main.getPlugin().getServer().getOnlinePlayers()) {
-                list.add(p.getName().toString().toLowerCase());
+                list.add(p.getName().toString());
             }
         }
 
         ArrayList<String> completerList = new ArrayList<>();
         String currentarg = args[args.length-1];
         for (String s : list) {
-            String s1 = s.toLowerCase();
+            String s1 = s;
             if (s1.startsWith(currentarg)){
                 completerList.add(s);
             }

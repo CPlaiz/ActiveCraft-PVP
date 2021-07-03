@@ -13,62 +13,84 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class StatsMessageCommand implements CommandExecutor, TabCompleter {
+
+    FileConfig nameuuidlist = new FileConfig("nameuuidlist.yml");
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender.hasPermission("stats.view") || sender.isOp()) {
             if (args.length == 1) {
+
+
                 Player ment = Main.getPlugin().getServer().getPlayer(args[0]);
 
-                FileConfig fileConfig = new FileConfig("playerdata/" + ment.getUniqueId().toString() + ".yml");
-                int killscount = fileConfig.getInt("stats.kills");
-                int episodescount = fileConfig.getInt("episodes");
-                boolean alive = fileConfig.getBoolean("isalive");
-                String teamnamestring = fileConfig.getString("team.name");
+                String uuid = nameuuidlist.getString(args[0].toLowerCase());
 
-                String splitter = "§6---------------\n";
-                String header = "§l§6" + ment.getName() + "'s Stats: \n";
-                String name = "§bName§f: " + ment.getName() + "\n";
-                String teamname = "§bTeam§f: " + teamnamestring + "\n";
-                String isalive;
-                String kills = "§bKills§f: " + killscount + "\n";
-                String episodes = "§bEpisodes§f: " + episodescount + "\n";
-                if (alive) {
-                    isalive = "§bAlive§f: " + ChatColor.GREEN + alive + "\n";
-                    sender.sendMessage(splitter + header + name + teamname + isalive + kills + episodes + splitter);
-                }
-                if (!alive) {
-                    isalive = "§bAlive§f: " + ChatColor.RED + alive + "\n";
-                    sender.sendMessage(splitter + header + name + teamname + isalive + kills + episodes + splitter);
-                }
+                File file = new File(Main.getPlugin().getDataFolder() + File.separator + "playerdata" + File.separator + uuid + ".yml");
+
+                if (file.exists()) {
+
+                    FileConfig fileConfig = new FileConfig("playerdata/" + uuid + ".yml");
+                    int killscount = fileConfig.getInt("stats.kills");
+                    int episodescount = fileConfig.getInt("episodes");
+                    boolean alive = fileConfig.getBoolean("isalive");
+                    String teamnamestring = fileConfig.getString("team.name");
+                    String namestring = fileConfig.getString("name");
+                    String uuidstring = fileConfig.getString("uuid");
+
+                    String splitter = "§6---------------\n";
+                    String header = "§l§6" + namestring + "'s Stats: \n";
+                    String name = "§bName§f: " + namestring + "\n";
+                    String teamname = "§bTeam§f: " + teamnamestring + "\n";
+                    String isalive;
+                    String kills = "§bKills§f: " + killscount + "\n";
+                    String episodes = "§bEpisodes§f: " + episodescount + "\n";
+                    if (alive) {
+                        isalive = "§bAlive§f: " + ChatColor.GREEN + alive + "\n";
+                        sender.sendMessage(splitter + header + name + teamname + isalive + kills + episodes + splitter);
+                    }
+                    if (!alive) {
+                        isalive = "§bAlive§f: " + ChatColor.RED + alive + "\n";
+                        sender.sendMessage(splitter + header + name + teamname + isalive + kills + episodes + splitter);
+                    }
+                }else sender.sendMessage(Main.INVALIDPLAYER);
 
             } else if (args.length == 0) {
                 Player player = (Player) sender;
 
-                FileConfig fileConfig = new FileConfig("playerdata/" + player.getUniqueId().toString() + ".yml");
-                int killscount = fileConfig.getInt("stats.kills");
-                int episodescount = fileConfig.getInt("episodes");
-                boolean alive = fileConfig.getBoolean("isalive");
-                String teamnamestring = fileConfig.getString("team.name");
+                //String uuid = nameuuidlist.getString(args[0].toLowerCase());
 
-                String splitter = "§6---------------\n";
-                String header = "§l§6Your Stats: \n";
-                String name = "§bName§f: " + player.getName() + "\n";
-                String teamname = "§bTeam§f: " + teamnamestring + "\n";
-                String isalive;
-                String kills = "§bKills§f: " + killscount + "\n";
-                String episodes = "§bEpisodes§f: " + episodescount + "\n";
-                if (alive) {
-                    isalive = "§bAlive§f: " + ChatColor.GREEN + alive + "\n";
-                    sender.sendMessage(splitter + header + name + teamname + isalive + kills + episodes + splitter);
-                }
-                if (!alive) {
-                    isalive = "§bAlive§f: " + ChatColor.RED + alive + "\n";
-                    sender.sendMessage(splitter + header + name + teamname + isalive + kills + episodes + splitter);
-                }
+
+
+                    FileConfig fileConfig = new FileConfig("playerdata/" + player.getUniqueId().toString() + ".yml");
+                    int killscount = fileConfig.getInt("stats.kills");
+                    int episodescount = fileConfig.getInt("episodes");
+                    boolean alive = fileConfig.getBoolean("isalive");
+                    String teamnamestring = fileConfig.getString("team.name");
+                    String namestring = fileConfig.getString("name");
+                    String uuidstring = fileConfig.getString("uuid");
+
+                    String splitter = "§6---------------\n";
+                    String header = "§l§6Your Stats: \n";
+                    String name = "§bName§f: " + namestring + "\n";
+                    String teamname = "§bTeam§f: " + teamnamestring + "\n";
+                    String isalive;
+                    String kills = "§bKills§f: " + killscount + "\n";
+                    String episodes = "§bEpisodes§f: " + episodescount + "\n";
+                    if (alive) {
+                        isalive = "§bAlive§f: " + ChatColor.GREEN + alive + "\n";
+                        sender.sendMessage(splitter + header + name + teamname + isalive + kills + episodes + splitter);
+                    }
+                    if (!alive) {
+                        isalive = "§bAlive§f: " + ChatColor.RED + alive + "\n";
+                        sender.sendMessage(splitter + header + name + teamname + isalive + kills + episodes + splitter);
+
+                } else sender.sendMessage(Main.INVALIDPLAYER);
             }
 
         } else sender.sendMessage(Main.NOPERMISSION);

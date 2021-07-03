@@ -10,26 +10,32 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SetEpisodes implements CommandExecutor, TabCompleter {
 
+    FileConfig nameuuidlist = new FileConfig("nameuuidlist.yml");
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (sender.hasPermission("episodes.set") || sender.isOp()) {
             if (args.length == 2) {
-                Player ment = Main.getPlugin().getServer().getPlayer(args[0]);
-                if (ment != null) {
-                    int episodes = Integer.parseInt(args[1]);
-                    FileConfig fileConfig = new FileConfig("playerdata/" + ment.getUniqueId().toString() + ".yml");
+                String uuid = nameuuidlist.getString(args[0].toLowerCase());
+                File file = new File(Main.getPlugin().getDataFolder() + File.separator + "playerdata" + File.separator + uuid + ".yml");
 
+                if (file.exists()) {
+                if (uuid != null) {
+                    //System.out.println(uuid);
+                    FileConfig fileConfig = new FileConfig("playerdata/" + uuid + ".yml");
+                    int episodes = Integer.parseInt(args[1]);
                     fileConfig.set("episodes", episodes);
                     fileConfig.saveConfig();
 
-                    sender.sendMessage(ChatColor.GOLD + "Episodes for " + ment.getName() + " is now " + episodes);
+                    sender.sendMessage(ChatColor.GOLD + "Episodes for " + args[0] + " is now " + episodes);
 
+                    } else sender.sendMessage(ChatColor.GOLD + "This is not a valid player!");
                 } else sender.sendMessage(ChatColor.GOLD + "This is not a valid player!");
             } else sender.sendMessage(ChatColor.GOLD + "This is not a valid player!");
         } else sender.sendMessage(ChatColor.RED + "You are not allowed to do that!");

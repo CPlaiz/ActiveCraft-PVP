@@ -5,20 +5,24 @@ import de.cplaiz.activecraft.Varo.Listener.KickTimer;
 import de.cplaiz.activecraft.Varo.Listener.StatsListener;
 import de.cplaiz.activecraft.Varo.Timer;
 import de.cplaiz.activecraft.commands.*;
+import de.cplaiz.activecraft.discord.listener.CommandListener;
 import de.cplaiz.activecraft.listener.JoinQuitListener;
+import de.cplaiz.activecraft.listener.TeleportInsideBorderListener;
 import de.cplaiz.activecraft.listener.discord.DiscordListener;
 import de.cplaiz.activecraft.utils.Config;
-import de.cplaiz.activecraft.utils.ConfigReloadCommand;
+import de.cplaiz.activecraft.utils.ReloadCommand;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.json.simple.JSONObject;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.security.auth.login.LoginException;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
@@ -28,17 +32,23 @@ public final class Main extends JavaPlugin {
 
     private Config locations;
     private Config config;
+    private Config playerlist;
+    private Config nameuuidlist;
+    private Config data;
 
-    public static String PREFIX = "§aActiveCraft §7§o";
-    public static String NOPERMISSION = "§cYou don't have the permission to do that!";
-    public static String INVALIDARGS = "§cInvalid arguments!";
+    public static String PREFIX = ChatColor.GREEN + "ActiveCraft §f";
+    public static String NOPERMISSION = ChatColor.RED + "You don't have the permission to do that!";
+    public static String INVALIDARGS = ChatColor.GOLD + "Invalid arguments! Please recheck the command!";
+    public static String INVALIDPLAYER = ChatColor.GOLD + "This is an invalid player!";
 
 
     public static Main INSTANCE;
 
     public JDA bot = null;
 
+    private CommandManager cmdMan;
 
+    private boolean useHolographicDisplays;
 
     @Override
     public void onLoad() {
@@ -64,23 +74,33 @@ public final class Main extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        //Config leaderboardConfig;
+        saveDefaultConfig();
 
-        //File file = new File(Tutorial.getPlugin().getDataFolder() + "\\playerdata\\");
-        //if(!file.exists()) {
-        //    file.mkdir();
-        //}
+        File file = new File(getDataFolder(), "data.yml");
 
-        //leaderboardConfig = new Config("playerdata/" + "playerlist" + ".yml", Tutorial.getPlugin().getDataFolder());
+        if(!file.exists()) {
+            saveResource("data.yml", false);
+        }
 
+        if (getConfig().getBoolean("test")){
+            getLogger().info(getConfig().getString("test.msg"));
+        }
+        locations = new Config("locations.yml" , getDataFolder());
+        config = new Config("config.yml" , getDataFolder());
+        playerlist = new Config("playerlist.yml" , getDataFolder());
+        nameuuidlist = new Config("nameuuidlist.yml" , getDataFolder());
+        data = new Config("data.yml" , getDataFolder());
 
-        //config kram in die konsole
+        useHolographicDisplays = Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays");
 
-
-        //jda bot
-        JDABuilder builder = JDABuilder.createDefault("ODQ2NzE3MjA4NjA4NzY4MDAw.YKzk2Q.uyBASaTNGvuQzHxxsX51UmpUFpM");
+        String BotToken = getConfig().getString("BotToken");
+        JDABuilder builder = JDABuilder.createDefault(BotToken);
         builder.setActivity(Activity.playing("PvP Event hosted by Silencio"));
 
+        this.cmdMan = new CommandManager();
+
+        //discord listeners
+        builder.addEventListeners(new CommandListener());
 
         try {
             bot = builder.build();
@@ -90,50 +110,32 @@ public final class Main extends JavaPlugin {
         }
         System.out.println("Discord Bot has started.");
 
-        //Tutorial.INSTANCE.sendtodiscord("Server has started");
-
           plugin = this;
 
-        saveDefaultConfig();
-
-        if (getConfig().getBoolean("test")){
-            getLogger().info(getConfig().getString("test.msg"));
-        }
-        locations = new Config("locations.yml" , getDataFolder());
-        config = new Config("config.yml" , getDataFolder());
 
 
 
         String WebhookURL = getConfig().getString("WebhookURL");
 
+
         // Plugin startup logic
         this.register();
-        log("Plugin loaded");
+        log("§7Plugin loaded");
         try {
            url = new URL(WebhookURL);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
 
-
-
-
         timer = new Timer(false, 0);
-
-
-
-
 
     }
 
     @Override
     public void onDisable() {
 
-
-
-        //Tutorial.INSTANCE.sendtodiscord("Server has stopped");
         // Plugin shutdown logic
-        log("Plugin unloaded");
+        log("§7Plugin unloaded");
     }
 
     public void log(String text) {
@@ -144,7 +146,6 @@ public final class Main extends JavaPlugin {
     private void register() {
 
     //listener
-
     PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new JoinQuitListener(), this);
         //pluginManager.registerEvents(new Navigator(1), this);
@@ -152,14 +153,11 @@ public final class Main extends JavaPlugin {
         //pluginManager.registerEvents(new KickScheduler(), this);
         pluginManager.registerEvents(new KickTimer(), this);
         pluginManager.registerEvents(new StatsListener(), this);
-        //pluginManager.registerEvents(new TeleportInsideBorderListener2(), this);
+        //pluginManager.registerEvents(new TeleportInsideBorderListener(), this);
 
 
 
     //commands
-
-
-        //Bukkit.getPluginCommand("heal").setExecutor(new HealCommand());
         Bukkit.getPluginCommand("spawn").setExecutor(new SpawnCommand());
         Bukkit.getPluginCommand("canceltimer").setExecutor(new TimerCancelCommand());
         Bukkit.getPluginCommand("setepisodes").setExecutor(new SetEpisodes());
@@ -167,13 +165,13 @@ public final class Main extends JavaPlugin {
         Bukkit.getPluginCommand("setkills").setExecutor(new SetKills());
         Bukkit.getPluginCommand("setalive").setExecutor(new SetAlive());
         Bukkit.getPluginCommand("duty").setExecutor(new OnDutyCommand());
-        Bukkit.getPluginCommand("activecraft-reload").setExecutor(new ConfigReloadCommand());
+        Bukkit.getPluginCommand("border").setExecutor(new OutsideBorderTest());
+        //Bukkit.getPluginCommand("activecraft-reload").setExecutor(new ReloadCommand());
         Bukkit.getPluginCommand("stats").setExecutor(new StatsMessageCommand());
         Bukkit.getPluginCommand("varo-start").setExecutor(new KickTimer());
-        //Bukkit.getPluginCommand("fly").setExecutor(new FlyCommand());
-        //Bukkit.getPluginCommand("item").setExecutor(new ItemCommand());
-        //Bukkit.getPluginCommand("admin-items").setExecutor(new AdminItemsCommand());
-       // Bukkit.getPluginCommand("seeinv").setExecutor(new SeeInv());
+        Bukkit.getPluginCommand("varo-stop").setExecutor(new StopCommand());
+        Bukkit.getPluginCommand("playerdata-reset").setExecutor(new PlayerdataResetCommand());
+
     }
 
     public void sendtodiscord(String content) {
@@ -200,7 +198,6 @@ public final class Main extends JavaPlugin {
     public void sendfulltodiscord(String embeds) {
         try {
             JSONObject jsonObject = new JSONObject();
-            //jsonObject.put("content", content);
             jsonObject.put("embeds", embeds);
             HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
             connection.addRequestProperty("Content-Type", "application/json");
@@ -234,5 +231,9 @@ public final class Main extends JavaPlugin {
 
     public static Main getINSTANCE() {
         return INSTANCE;
+    }
+
+    public CommandManager getCmdMan() {
+        return cmdMan;
     }
 }

@@ -1,13 +1,18 @@
+BotToken: ''
 TimerTime: 900 #in seconds
-CommandExecutedOnTimerEnd: "spawn"
-CommandExecutedOnEventStart: "say start"
-StartMessage: "§6The event has started! Good luck."
+CommandExecutedOnTimerEnd: ''
+CommandExecutedOnEventStart: 'say start'
+StartMessage: '§6The event has started! Good luck.'
+StopMessage: '§6The event is over!'
 TimeBeforeEventStart: 15 #in seconds
-MessageOnTimerStart: ""
-WorldName: "test"
-WebhookURL: "" #Go to channel settings -> Integrations -> Webhooks -> New Webhook and paste url in the two ""
-MessageChannel: "846779760713793558"
-CommandExecutedOnJoinQuit: ""
-CommandExecutedOnPlayerDeath: ""
-DutyOnCommand: ""
-DutyOffCommand: ""
+MessageOnTimerStart: ''
+WorldName: 'test'
+LogWorldChanges: false
+WebhookURL: '' #Go to channel settings -> Integrations -> Webhooks -> New Webhook and paste url in the two ''
+MessageChannel: '846779760713793558'
+CommandExecutedOnJoinQuit: ''
+CommandExecutedOnPlayerDeath: ''
+DutyOnCommand: ''
+DutyOffCommand: ''
+ModRoleId: 858483265475837972
+BotPrefix: 'v!'

@@ -27,6 +27,12 @@ commands:
     description: Shows a player's Varo statistics.
   varo-start:
     description: Starts the event.
+  varo-stop:
+    description: Stops the event.
+  playerdata-reset:
+    description: Resets the playerdate config files for all VARO players.
+  border:
+    description: check if outside border
 
 
 
@@ -66,4 +72,10 @@ permissions:
     default: op
   de.cplaiz.activecraft.event.start:
     descriptions: Permission to start the event
+    default: op
+  de.cplaiz.activecraft.event.stop:
+    descriptions: Permission to stop the event
+    default: op
+  de.cplaiz.activecraft.playerdata.reset:
+    descriptions: Permission to reset playerdata configs
     default: op

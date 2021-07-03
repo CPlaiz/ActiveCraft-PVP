@@ -55,110 +55,109 @@ public class KickTimer implements Listener, CommandExecutor {
         //System.out.println(playerStoring.get(player.getUniqueId()));
 
         FileConfig fileConfig = new FileConfig("playerdata/" + player.getUniqueId().toString() + ".yml");
+        FileConfig dataConfig = new FileConfig("data.yml");
 
-        boolean onDuty = fileConfig.getBoolean("onDuty");
+        boolean onDuty = fileConfig.getBoolean("on-duty");
 
         Location to = event.getTo();
         Location from = event.getFrom();
 
-        if(!onDuty) {
+        if (dataConfig.getBoolean("is-active")) {
 
-            if (!to.getWorld().getName().equals(from.getWorld().getName())) {
+            if (!onDuty) {
 
-                playerStoring.put(player.getUniqueId(), player);
-                if (!timerActive.containsKey(player.getUniqueId())) {
-                    if (to.getWorld().getName().equals(worldName) || to.getWorld().getName().equals(worldName + "_nether")) {
+                if (!to.getWorld().getName().equals(from.getWorld().getName())) {
 
-                        player.sendMessage(messageOnTimerStart);
+                    playerStoring.put(player.getUniqueId(), player);
+                    if (!timerActive.containsKey(player.getUniqueId())) {
+                        if (to.getWorld().getName().equals(worldName) || to.getWorld().getName().equals(worldName + "_nether")) {
 
-                        BukkitRunnable runnable = new BukkitRunnable() {
+                            player.sendMessage(messageOnTimerStart);
 
-                            int zeit = time;
+                            BukkitRunnable runnable = new BukkitRunnable() {
 
-                            Player p;
+                                int zeit = time;
+
+                                Player p;
 
 
-                            @Override
-                            public void run() {
+                                @Override
+                                public void run() {
 
-                                p = playerStoring.get(player.getUniqueId());
+                                    p = playerStoring.get(player.getUniqueId());
 
-                                switch (zeit) {
-                                    case 600:
-                                        p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l10 Minuten§r §bgekickt!");
-                                        p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                                        break;
-                                    case 300:
-                                        p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l5 Minuten§r §bgekickt!");
-                                        p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                                        break;
-                                    case 60:
-                                        p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l1 Minute§r §bgekickt!");
-                                        p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                                        break;
-                                    case 30:
-                                        p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l30 Sekunden§r §bgekickt!");
-                                        p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                                        break;
-                                    case 10:
-                                        p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l10 Sekunden§r §bgekickt!");
-                                        p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                                        break;
-                                    case 5:
-                                        p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l5 Sekunden§r §bgekickt!");
-                                        p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                                        break;
-                                    case 4:
-                                        p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l4 Sekunden§r §bgekickt!");
-                                        p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                                        break;
-                                    case 3:
-                                        p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l3 Sekunden§r §bgekickt!");
-                                        p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                                        break;
-                                    case 2:
-                                        p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l2 Sekunden§r §bgekickt!");
-                                        p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                                        break;
-                                    case 1:
-                                        p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l1 Sekunde§r §bgekickt!");
-                                        p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                                        break;
+                                    switch (time) {
+                                        case 600:
+                                            p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l10 Minuten§r §bgekickt!");
+                                            p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                                            break;
+                                        case 300:
+                                            p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l5 Minuten§r §bgekickt!");
+                                            p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                                            break;
+                                        case 60:
+                                            p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l1 Minute§r §bgekickt!");
+                                            p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                                            break;
+                                        case 30:
+                                            p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l30 Sekunden§r §bgekickt!");
+                                            p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                                            break;
+                                        case 10:
+                                            p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l10 Sekunden§r §bgekickt!");
+                                            p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                                            break;
+                                        case 5:
+                                            p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l5 Sekunden§r §bgekickt!");
+                                            p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                                            break;
+                                        case 4:
+                                            p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l4 Sekunden§r §bgekickt!");
+                                            p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                                            break;
+                                        case 3:
+                                            p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l3 Sekunden§r §bgekickt!");
+                                            p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                                            break;
+                                        case 2:
+                                            p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l2 Sekunden§r §bgekickt!");
+                                            p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                                            break;
+                                        case 1:
+                                            p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l1 Sekunde§r §bgekickt!");
+                                            p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                                            break;
+
+                                    }
+
+                                    if (zeit == 0) {
+                                        p.performCommand(commandTimerEnd);
+                                        cancel();
+                                        timerActive.remove(p.getUniqueId());
+                                        int episodes = fileConfig.getInt("episodes");
+                                        fileConfig.set("episodes", episodes + 1);
+                                        fileConfig.saveConfig();
+
+                                        return;
+                                    }
+
+                                    p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(shortInteger(zeit)));
+
+
+                                    zeit--;
+                                    //System.out.println(zeit);
+                                    timerActive.put(player.getUniqueId(), zeit);
+
 
                                 }
+                            };
 
-                                if (zeit == 0) {
-                                    p.performCommand(commandTimerEnd);
-                                    cancel();
-                                    timerActive.remove(p.getUniqueId());
-                                    int episodes = fileConfig.getInt("episodes");
-                                    fileConfig.set("episodes", episodes + 1);
-                                    fileConfig.saveConfig();
+                            runnable.runTaskTimer(Main.getPlugin(), 0, 20);
+                            fileConfig.set("taskid", runnable.getTaskId());
+                            fileConfig.saveConfig();
+                            //System.out.println("TaskId saved");
 
-                                    return;
-                                }
-
-                                //System.out.println(timerActive.get(player.getUniqueId()));
-
-                                //System.out.println(zeit);
-
-
-                                p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(shortInteger(zeit)));
-
-
-                                zeit--;
-                                //System.out.println(zeit);
-                                timerActive.put(player.getUniqueId(), zeit);
-
-
-                            }
-                        };
-
-                        runnable.runTaskTimer(Main.getPlugin(), 0, 20);
-                        fileConfig.set("taskid", runnable.getTaskId());
-                        fileConfig.saveConfig();
-                        //System.out.println("TaskId saved");
-
+                        }
                     }
                 }
             }
@@ -169,141 +168,134 @@ public class KickTimer implements Listener, CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
-        if (sender.hasPermission("event.start")) {
+        FileConfig dataConfig = new FileConfig("data.yml");
 
-            BukkitRunnable runnableStart = new BukkitRunnable() {
-                int zeitStart = TimeBeforeEventStart;
+        if (!dataConfig.getBoolean("is-active")) {
 
-                Player p;
+            if (sender.hasPermission("event.start")) {
 
+                BukkitRunnable runnableStart = new BukkitRunnable() {
+                    int zeitStart = TimeBeforeEventStart;
 
-                @Override
-                public void run() {
-
-                    if (zeitStart == 0) {
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), commandEventStart);
-                        cancel();
-
-                        for (Player player : Main.getPlugin().getServer().getOnlinePlayers()) {
-
-                            Title title = new Title(ChatColor.RED + StartMessage);
-                            player.sendTitle(title);
-
-                            //System.out.println(timerActive.get(player.getUniqueId()));
-                            //System.out.println(playerStoring.get(player.getUniqueId()));
-
-                            FileConfig fileConfig = new FileConfig("playerdata/" + player.getUniqueId().toString() + ".yml");
-
-                            playerStoring.put(player.getUniqueId(), player);
-                            if (!timerActive.containsKey(player.getUniqueId())) {
-
-                                BukkitRunnable runnable = new BukkitRunnable() {
-
-                                    int zeit = time;
-
-                                    Player p;
+                    Player p;
 
 
-                                    @Override
-                                    public void run() {
+                    @Override
+                    public void run() {
 
-                                        p = playerStoring.get(player.getUniqueId());
+                        if (zeitStart == 0) {
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), commandEventStart);
+                            cancel();
 
-                                        switch (zeit) {
-                                            case 600:
-                                                p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l10 Minuten§r §bgekickt!");
-                                                p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                                                break;
-                                            case 300:
-                                                p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l5 Minuten§r §bgekickt!");
-                                                p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                                                break;
-                                            case 60:
-                                                p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l1 Minute§r §bgekickt!");
-                                                p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                                                break;
-                                            case 30:
-                                                p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l30 Sekunden§r §bgekickt!");
-                                                p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                                                break;
-                                            case 10:
-                                                p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l10 Sekunden§r §bgekickt!");
-                                                p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                                                break;
-                                            case 5:
-                                                p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l5 Sekunden§r §bgekickt!");
-                                                p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                                                break;
-                                            case 4:
-                                                p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l4 Sekunden§r §bgekickt!");
-                                                p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                                                break;
-                                            case 3:
-                                                p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l3 Sekunden§r §bgekickt!");
-                                                p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                                                break;
-                                            case 2:
-                                                p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l2 Sekunden§r §bgekickt!");
-                                                p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                                                break;
-                                            case 1:
-                                                p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l1 Sekunde§r §bgekickt!");
-                                                p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
-                                                break;
+                            FileConfig dataConfig = new FileConfig("data.yml");
+                            dataConfig.set("is-active", true);
+                            dataConfig.saveConfig();
 
+                            for (Player player : Main.getPlugin().getServer().getOnlinePlayers()) {
+
+                                Title title = new Title(ChatColor.RED + StartMessage);
+                                player.sendTitle(title);
+
+                                FileConfig fileConfig = new FileConfig("playerdata/" + player.getUniqueId().toString() + ".yml");
+
+                                playerStoring.put(player.getUniqueId(), player);
+                                if (!timerActive.containsKey(player.getUniqueId())) {
+
+                                    BukkitRunnable runnable = new BukkitRunnable() {
+
+                                        int zeit = time;
+
+                                        Player p;
+
+
+                                        @Override
+                                        public void run() {
+
+                                            p = playerStoring.get(player.getUniqueId());
+
+                                            switch (zeit) {
+                                                case 600:
+                                                    p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l10 Minuten§r §bgekickt!");
+                                                    p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                                                    break;
+                                                case 300:
+                                                    p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l5 Minuten§r §bgekickt!");
+                                                    p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                                                    break;
+                                                case 60:
+                                                    p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l1 Minute§r §bgekickt!");
+                                                    p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                                                    break;
+                                                case 30:
+                                                    p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l30 Sekunden§r §bgekickt!");
+                                                    p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                                                    break;
+                                                case 10:
+                                                    p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l10 Sekunden§r §bgekickt!");
+                                                    p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                                                    break;
+                                                case 5:
+                                                    p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l5 Sekunden§r §bgekickt!");
+                                                    p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                                                    break;
+                                                case 4:
+                                                    p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l4 Sekunden§r §bgekickt!");
+                                                    p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                                                    break;
+                                                case 3:
+                                                    p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l3 Sekunden§r §bgekickt!");
+                                                    p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                                                    break;
+                                                case 2:
+                                                    p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l2 Sekunden§r §bgekickt!");
+                                                    p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                                                    break;
+                                                case 1:
+                                                    p.sendMessage("§4§lWARNUNG §bDu wirst in §a§l1 Sekunde§r §bgekickt!");
+                                                    p.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1, 1);
+                                                    break;
+
+                                            }
+
+                                            if (zeit == 0) {
+                                                p.performCommand(commandTimerEnd);
+                                                cancel();
+                                                timerActive.remove(p.getUniqueId());
+                                                int episodes = fileConfig.getInt("episodes");
+                                                fileConfig.set("episodes", episodes + 1);
+                                                fileConfig.saveConfig();
+                                                return;
+                                            }
+
+                                            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(shortInteger(zeit)));
+
+                                            zeit--;
+                                            timerActive.put(player.getUniqueId(), zeit);
                                         }
+                                    };
 
-                                        if (zeit == 0) {
-                                            p.performCommand(commandTimerEnd);
-                                            cancel();
-                                            timerActive.remove(p.getUniqueId());
-                                            int episodes = fileConfig.getInt("episodes");
-                                            fileConfig.set("episodes", episodes + 1);
-                                            fileConfig.saveConfig();
-
-                                            return;
-                                        }
-
-                                        //System.out.println(timerActive.get(player.getUniqueId()));
-
-                                        //System.out.println(zeit);
-
-
-                                        p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(shortInteger(zeit)));
-
-
-                                        zeit--;
-                                        //System.out.println(zeit);
-                                        timerActive.put(player.getUniqueId(), zeit);
-
-
-                                    }
-                                };
-
-                                runnable.runTaskTimer(Main.getPlugin(), 0, 20);
-                                fileConfig.set("taskid", runnable.getTaskId());
-                                fileConfig.saveConfig();
-                                //System.out.println("TaskId saved");
-
+                                    runnable.runTaskTimer(Main.getPlugin(), 0, 20);
+                                    fileConfig.set("taskid", runnable.getTaskId());
+                                    fileConfig.saveConfig();
+                                }
                             }
+                            return;
                         }
 
-                        return;
+                        for (Player player : Main.getPlugin().getServer().getOnlinePlayers()) {
+                            Title title = new Title(ChatColor.RED + shortInteger(zeitStart));
+                            player.sendTitle(title);
+                        }
+
+                        zeitStart--;
+
                     }
-
-                    for (Player player : Main.getPlugin().getServer().getOnlinePlayers()) {
-                        Title title = new Title(ChatColor.RED + shortInteger(zeitStart));
-                        player.sendTitle(title);
-                    }
-
-                    zeitStart--;
-
-                }
-            };
-            runnableStart.runTaskTimer(Main.getPlugin(), 0, 20);
+                };
+                runnableStart.runTaskTimer(Main.getPlugin(), 0, 20);
 
 
-        }
+            }
+    }
         return true;
     }
 
