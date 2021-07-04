@@ -32,7 +32,9 @@ commands:
   playerdata-reset:
     description: Resets the playerdate config files for all VARO players.
   border:
-    description: check if outside border
+    description: check if outside border and teleport inside
+  varo-add-player:
+    description: add a player or everyone online to the participants list
 
 
 
@@ -75,6 +77,9 @@ permissions:
     default: op
   de.cplaiz.activecraft.event.stop:
     descriptions: Permission to stop the event
+    default: op
+  de.cplaiz.activecraft.event.player.add:
+    descriptions: Permission to add participants to the event
     default: op
   de.cplaiz.activecraft.playerdata.reset:
     descriptions: Permission to reset playerdata configs

@@ -66,11 +66,11 @@ public class StatsMessageCommand implements CommandExecutor, TabCompleter {
                     String lastonline = "§bLast online§f: " + lastonlinestring + "\n";
                     if (alive) {
                         isalive = "§bAlive§f: " + ChatColor.GREEN + alive + "\n";
-                        sender.sendMessage(splitter + header + name + teamname + isalive + episodes + kills + playerkills +mobkills + animalkills + blocks +blocksbroken + blocksplaced + lastonline + splitter);
+                        sender.sendMessage(splitter + header + name + teamname + isalive + episodes + playerkills + lastonline + splitter);
                     }
                     if (!alive) {
                         isalive = "§bAlive§f: " + ChatColor.RED + alive + "\n";
-                        sender.sendMessage(splitter + header + name + teamname + isalive + episodes + kills + playerkills +mobkills + animalkills + blocks +blocksbroken + blocksplaced + lastonline + splitter);
+                        sender.sendMessage(splitter + header + name + teamname + isalive + episodes + playerkills + lastonline + splitter);
                     }
                 }else sender.sendMessage(Main.INVALIDPLAYER);
 
@@ -110,11 +110,11 @@ public class StatsMessageCommand implements CommandExecutor, TabCompleter {
                 String lastonline = "§bLast online§f: " + lastonlinestring + "\n";
                 if (alive) {
                     isalive = "§bAlive§f: " + ChatColor.GREEN + alive + "\n";
-                    sender.sendMessage(splitter + header + name + teamname + isalive + episodes + kills + playerkills +mobkills + animalkills + blocks +blocksbroken + blocksplaced + lastonline + splitter);
+                    sender.sendMessage(splitter + header + name + teamname + isalive + episodes + playerkills + lastonline + splitter);
                 }
                 if (!alive) {
                     isalive = "§bAlive§f: " + ChatColor.RED + alive + "\n";
-                    sender.sendMessage(splitter + header + name + teamname + isalive + episodes + kills + playerkills +mobkills + animalkills + blocks +blocksbroken + blocksplaced + lastonline + splitter);
+                    sender.sendMessage(splitter + header + name + teamname + isalive + episodes + playerkills + lastonline + splitter);
                 }
             } else sender.sendMessage(Main.INVALIDPLAYER);
 

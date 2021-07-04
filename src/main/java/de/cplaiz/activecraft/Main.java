@@ -35,6 +35,7 @@ public final class Main extends JavaPlugin {
     private Config playerlist;
     private Config nameuuidlist;
     private Config data;
+    private Config participants;
 
     public static String PREFIX = ChatColor.GREEN + "ActiveCraft §f";
     public static String NOPERMISSION = ChatColor.RED + "You don't have the permission to do that!";
@@ -90,6 +91,7 @@ public final class Main extends JavaPlugin {
         playerlist = new Config("playerlist.yml" , getDataFolder());
         nameuuidlist = new Config("nameuuidlist.yml" , getDataFolder());
         data = new Config("data.yml" , getDataFolder());
+        participants = new Config("participants.yml" , getDataFolder());
 
         useHolographicDisplays = Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays");
 
@@ -171,6 +173,7 @@ public final class Main extends JavaPlugin {
         Bukkit.getPluginCommand("varo-start").setExecutor(new KickTimer());
         Bukkit.getPluginCommand("varo-stop").setExecutor(new StopCommand());
         Bukkit.getPluginCommand("playerdata-reset").setExecutor(new PlayerdataResetCommand());
+        Bukkit.getPluginCommand("varo-add-player").setExecutor(new AddVaroPlayerCommand());
 
     }
 

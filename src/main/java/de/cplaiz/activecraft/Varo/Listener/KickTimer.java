@@ -4,6 +4,9 @@ import com.destroystokyo.paper.Title;
 import de.cplaiz.activecraft.Main;
 import de.cplaiz.activecraft.utils.Config;
 import de.cplaiz.activecraft.utils.FileConfig;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -21,7 +24,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class KickTimer implements Listener, CommandExecutor {
@@ -40,9 +45,9 @@ public class KickTimer implements Listener, CommandExecutor {
     public static HashMap<UUID, Integer> timerActive = new HashMap<UUID, Integer>();
     public static HashMap<UUID, Player> playerStoring = new HashMap<UUID, Player>();
     //private HashMap<UUID, Integer> taskid = new HashMap<UUID, Integer>();
+    ArrayList<String> teamnamestoring = new ArrayList<>();
 
-    //gson json krams
-
+    JDA jda = Main.getPlugin().bot;
 
 
 
@@ -145,7 +150,7 @@ public class KickTimer implements Listener, CommandExecutor {
 
 
                                     zeit--;
-                                    System.out.println(zeit);
+                                    //System.out.println(zeit);
                                     timerActive.put(player.getUniqueId(), zeit);
 
 
@@ -169,6 +174,7 @@ public class KickTimer implements Listener, CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
         FileConfig dataConfig = new FileConfig("data.yml");
+        FileConfig config = new FileConfig("config.yml");
 
         if (!dataConfig.getBoolean("is-active")) {
 
@@ -190,6 +196,60 @@ public class KickTimer implements Listener, CommandExecutor {
                             FileConfig dataConfig = new FileConfig("data.yml");
                             dataConfig.set("is-active", true);
                             dataConfig.saveConfig();
+
+                            long channelid = config.getLong("Death-Message-Channel-Id");
+                            TextChannel tc = jda.getTextChannelById(channelid);
+
+                            EmbedBuilder deathOverview = new EmbedBuilder();
+
+                            FileConfig participantsList = new FileConfig("participants.yml");
+                            List<String> players = participantsList.getStringList("participants");
+                            for (String uuid : players) {
+                                FileConfig playerdataConfig = new FileConfig("playerdata/" + uuid + ".yml");
+                                String name =  playerdataConfig.getString("name");
+                                String teamname =  playerdataConfig.getString("team.name");
+                                boolean alive = playerdataConfig.getBoolean("is-alive");
+                                List<String> players2 = participantsList.getStringList("participants");
+                                players2.remove(uuid);
+
+                                for (String uuid2 : players2) {
+                                    System.out.println(uuid2);
+                                    FileConfig playerdataConfig2 = new FileConfig("playerdata/" + uuid2 + ".yml");
+                                    String name2 =  playerdataConfig2.getString("name");
+                                    String teamname2 =  playerdataConfig2.getString("team.name");
+                                    boolean alive2 = playerdataConfig2.getBoolean("is-alive");
+                                    System.out.println(alive + " " + alive2);
+                                    if (teamname.equals(teamname2) && !teamnamestoring.contains(teamname)) {
+                                        if (alive && alive2) {
+                                            deathOverview.addField(teamname, name + ":white_check_mark:\n" + name2 + ":white_check_mark:", false);
+                                            teamnamestoring.add(teamname);
+                                        } else if(alive && !alive2) {
+                                            deathOverview.addField(teamname, name + ":white_check_mark:\n" + name2 + ":x:", false);
+                                            teamnamestoring.add(teamname);
+                                        } else if(!alive && alive2) {
+                                            deathOverview.addField(teamname, name + ":x:\n" + name2 + ":white_check_mark:", false);
+                                            teamnamestoring.add(teamname);
+                                        } else if(!alive && !alive2) {
+                                            deathOverview.addField(teamname, name + ":x:\n" + name2 + ":x:", false);
+                                            teamnamestoring.add(teamname);
+                                        }
+
+                                    }
+                                    //players.remove(uuid);
+
+
+                                    deathOverview.setColor(0x000000);
+                                    deathOverview.setTitle("Death Overview");
+                                }
+
+                            }
+
+                            tc.sendMessageEmbeds(deathOverview.build()).queue((message) -> {
+                                long messageId = message.getIdLong();
+                                dataConfig.set("death-message-id", messageId);
+                                dataConfig.saveConfig();
+                            });
+
 
                             for (Player player : Main.getPlugin().getServer().getOnlinePlayers()) {
 
@@ -295,7 +355,7 @@ public class KickTimer implements Listener, CommandExecutor {
 
 
             }
-    }
+    } else sender.sendMessage(ChatColor.RED + "The event is already running!");
         return true;
     }
 

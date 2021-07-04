@@ -5,6 +5,8 @@ import de.cplaiz.activecraft.utils.Config;
 import de.cplaiz.activecraft.utils.FileConfig;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.bukkit.*;
 import org.bukkit.command.ConsoleCommandSender;
@@ -21,10 +23,14 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
 public class JoinQuitListener implements Listener {
+
+    ArrayList<String> teamnamestoring = new ArrayList<>();
 
     String tcidraw = Main.getPlugin().getConfig().getString("MessageChannel");
     String commandExecutedOnJoinQuit = Main.getPlugin().getConfig().getString("CommandExecutedOnJoinQuit");
@@ -242,11 +248,67 @@ public class JoinQuitListener implements Listener {
                 if (p.getWorld().getName().equals(worldName) || p.getWorld().getName().equals(worldName + "_nether")) {
 
                     fileConfig.set("is-alive", false);
+                    fileConfig.saveConfig();
 
                     for (String s : commandExecutedOnPlayerDeath) {
                         Bukkit.dispatchCommand(console, s.replace("%playername%", p.getName()));
                         System.out.println(s.replace("%playername%", p.getName()));
                     }
+
+                    FileConfig config = new FileConfig("config.yml");
+
+                    long messageid = dataConfig.getLong("death-message-id");
+                    long channelid = config.getLong("Death-Message-Channel-Id");
+                    TextChannel textChannel = tc.getGuild().getTextChannelById(channelid);
+
+                    EmbedBuilder deathOverview = new EmbedBuilder();
+
+                    FileConfig participantsList = new FileConfig("participants.yml");
+                    List<String> players = participantsList.getStringList("participants");
+                    for (String uuid : players) {
+                        FileConfig playerdataConfig = new FileConfig("playerdata/" + uuid + ".yml");
+                        String name =  playerdataConfig.getString("name");
+                        String teamname =  playerdataConfig.getString("team.name");
+                        boolean alive = playerdataConfig.getBoolean("is-alive");
+                        List<String> players2 = participantsList.getStringList("participants");
+                        players2.remove(uuid);
+
+                        for (String uuid2 : players2) {
+                            System.out.println(uuid2);
+                            FileConfig playerdataConfig2 = new FileConfig("playerdata/" + uuid2 + ".yml");
+                            String name2 =  playerdataConfig2.getString("name");
+                            String teamname2 =  playerdataConfig2.getString("team.name");
+                            boolean alive2 = playerdataConfig2.getBoolean("is-alive");
+                            System.out.println(alive + " " + alive2);
+                            if (teamname.equals(teamname2) && !teamnamestoring.contains(teamname)) {
+                                if (alive && alive2) {
+                                    deathOverview.addField(teamname, name + ":white_check_mark:\n" + name2 + ":white_check_mark:", false);
+                                    teamnamestoring.add(teamname);
+                                } else if(alive && !alive2) {
+                                    deathOverview.addField(teamname, name + ":white_check_mark:\n" + name2 + ":x:", false);
+                                    teamnamestoring.add(teamname);
+                                } else if(!alive && alive2) {
+                                    deathOverview.addField(teamname, name + ":x:\n" + name2 + ":white_check_mark:", false);
+                                    teamnamestoring.add(teamname);
+                                } else if(!alive && !alive2) {
+                                    deathOverview.addField(teamname, name + ":x:\n" + name2 + ":x:", false);
+                                    teamnamestoring.add(teamname);
+                                }
+
+                            }
+                            //players.remove(uuid);
+
+
+                            deathOverview.setColor(0x000000);
+                            deathOverview.setTitle("Death Overview");
+                        }
+
+                    }
+
+                    textChannel.editMessageEmbedsById(messageid, deathOverview.build()).queue();
+                    teamnamestoring.clear();
+
+
                     EmbedBuilder deathBuilder = new EmbedBuilder();
                     deathBuilder.setTitle("**" + p.getName() + "** died ");
                     deathBuilder.addField("**Team**", "" + teamName, true);

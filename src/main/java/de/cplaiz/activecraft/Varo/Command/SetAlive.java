@@ -2,6 +2,9 @@ package de.cplaiz.activecraft.Varo.Command;
 
 import de.cplaiz.activecraft.Main;
 import de.cplaiz.activecraft.utils.FileConfig;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.TextChannel;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.*;
@@ -20,6 +23,10 @@ public class SetAlive implements CommandExecutor, TabCompleter {
 
     FileConfig nameuuidlist = new FileConfig("nameuuidlist.yml");
 
+    ArrayList<String> teamnamestoring = new ArrayList<>();
+
+    JDA jda = Main.getPlugin().bot;
+
     ConsoleCommandSender console = Bukkit.getConsoleSender();
 
     @Override
@@ -34,16 +41,19 @@ public class SetAlive implements CommandExecutor, TabCompleter {
                 if (uuid != null) {
                     //System.out.println(uuid);
                     FileConfig fileConfig = new FileConfig("playerdata/" + uuid + ".yml");
+                    FileConfig dataConfig = new FileConfig("data.yml");
                     switch (args[1].toLowerCase()) {
                         case "true":
                             fileConfig.set("is-alive", true);
                             fileConfig.saveConfig();
                             sender.sendMessage("§6Status for " + args[0] + ("§6 is now §a§lALIVE"));
+                            //editDeathOverview();
                             break;
                         case "false":
                             fileConfig.set("is-alive", false);
                             fileConfig.saveConfig();
                             sender.sendMessage("§6Status for " + args[0] + ("§6 is now §c§lDEAD"));
+                            //editDeathOverview();
                             break;
                     }
                     } else sender.sendMessage(Main.INVALIDARGS);
@@ -59,11 +69,13 @@ public class SetAlive implements CommandExecutor, TabCompleter {
                             fileConfig.set("is-alive", true);
                             fileConfig.saveConfig();
                             sender.sendMessage(ChatColor.GOLD + "Status for " + ChatColor.AQUA + p.getName() + ChatColor.GOLD + (" is now §a§lALIVE"));
+                            //editDeathOverview();
                             break;
                         case "false":
                             fileConfig.set("is-alive", false);
                             fileConfig.saveConfig();
                             sender.sendMessage(ChatColor.GOLD + "Status for " + ChatColor.AQUA + p.getName() + ChatColor.GOLD + (" is now §c§lDEAD"));
+                            //editDeathOverview();
                             break;
 
                     }
@@ -99,4 +111,60 @@ public class SetAlive implements CommandExecutor, TabCompleter {
 
         return completerList;
     }
+
+    public void editDeathOverview() {
+        FileConfig config = new FileConfig("config.yml");
+        FileConfig dataConfig = new FileConfig("data.yml");
+
+        long messageid = dataConfig.getLong("death-message-id");
+        long channelid = config.getLong("Death-Message-Channel-Id");
+        TextChannel textChannel = jda.getTextChannelById(channelid);
+
+        EmbedBuilder deathOverview = new EmbedBuilder();
+
+        FileConfig participantsList = new FileConfig("participants.yml");
+        List<String> players = participantsList.getStringList("participants");
+        for (String uuid : players) {
+            FileConfig playerdataConfig = new FileConfig("playerdata/" + uuid + ".yml");
+            String name =  playerdataConfig.getString("name");
+            String teamname =  playerdataConfig.getString("team.name");
+            boolean alive = playerdataConfig.getBoolean("is-alive");
+            List<String> players2 = participantsList.getStringList("participants");
+            players2.remove(uuid);
+
+            for (String uuid2 : players2) {
+                System.out.println(uuid2);
+                FileConfig playerdataConfig2 = new FileConfig("playerdata/" + uuid2 + ".yml");
+                String name2 =  playerdataConfig2.getString("name");
+                String teamname2 =  playerdataConfig2.getString("team.name");
+                boolean alive2 = playerdataConfig2.getBoolean("is-alive");
+                System.out.println(alive + " " + alive2);
+                if (teamname.equals(teamname2) && !teamnamestoring.contains(teamname)) {
+                    if (alive && alive2) {
+                        deathOverview.addField(teamname, name + ":white_check_mark:\n" + name2 + ":white_check_mark:", true);
+                        teamnamestoring.add(teamname);
+                    } else if(alive && !alive2) {
+                        deathOverview.addField(teamname, name + ":white_check_mark:\n" + name2 + ":x:", true);
+                        teamnamestoring.add(teamname);
+                    } else if(!alive && alive2) {
+                        deathOverview.addField(teamname, name + ":x:\n" + name2 + ":white_check_mark:", true);
+                        teamnamestoring.add(teamname);
+                    } else if(!alive && !alive2) {
+                        deathOverview.addField(teamname, name + ":x:\n" + name2 + ":x:", true);
+                        teamnamestoring.add(teamname);
+                    }
+
+                }
+                //players.remove(uuid);
+
+
+                deathOverview.setColor(0x000000);
+                deathOverview.setTitle("Death Overview");
+            }
+
+        }
+
+        textChannel.editMessageEmbedsById(messageid, deathOverview.build()).queue();
+    }
+
 }
